@@ -1,7 +1,7 @@
 # Личный проект «Что посмотреть»
 
 * Студент: [Димитар Житарямба](https://up.htmlacademy.ru/nodejs-api/2/user/1328779).
-* Наставник: `Павел Белик` (https://htmlacademy.ru/profile/id84572).
+* Наставник: [Павел Белик] (https://htmlacademy.ru/profile/id84572).
 
 ---
 
