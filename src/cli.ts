@@ -9,5 +9,4 @@ const myManager = new CLIApplication();
 myManager.registerCommands([
   new HelpCommand, new VersionCommand, new ImportCommand
 ]);
-
 myManager.processCommand(process.argv);
