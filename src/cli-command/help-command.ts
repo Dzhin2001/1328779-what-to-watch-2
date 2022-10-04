@@ -21,7 +21,7 @@ export default class HelpCommand implements CliCommandInterface {
 
             ts-node ./dist/cli.js --generate 10 ./mocks/films.tsv http://localhost:3333/api
 
-            ts-node ./dist/cli.js --import ./mocks/films.tsv
+            ts-node ./dist/cli.js --import ./mocks/films.tsv admin test 127.0.0.1 what2watch secret
         `);
   }
 }
