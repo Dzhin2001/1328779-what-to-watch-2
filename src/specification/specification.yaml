@@ -1,0 +1,684 @@
+openapi: 3.0.0
+info:
+  title: API сервер для проекта «Что посмотреть».
+  description: |-
+    * Список ресурсов и маршрутов сервера «Что посмотреть».
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 1.0.0
+tags:
+  - name: films
+    description: Действия с фильмами.
+  - name: comments
+    description: Действия с комментариями.
+  - name: users
+    description: Действия с пользователем.
+
+paths:
+
+  /film:
+    post:
+      tags:
+        - films
+      summary: Добавление нового фильма
+      description: Выполняет добавление нового фильма.
+
+      requestBody:
+        description: Информация по фильму.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createFilm'
+        required: true
+
+      responses:
+        "200":
+          description: Фильм добавлен. Объект фильма.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/film'
+
+        "400":
+          description: Ошибка тела запроса.
+
+        "401":
+          description: Пользователь не авторизован.
+
+  /film/{filmId}:
+    get:
+      tags:
+        - films
+      summary: Получение детальной информации по фильму
+      description: Получение детальной информации по фильму.
+
+      responses:
+        "200":
+          description: Детальная информация по фильму. Объект фильма.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/film'
+
+    put:
+      tags:
+        - films
+      summary: Редактирование карточки фильма
+      description: Редактирование карточки фильма.
+
+      requestBody:
+        description: Информация по фильму.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/editFilm'
+        required: true
+
+      responses:
+        "200":
+          description: Фильм добавлен. Объект фильма.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/film'
+
+        "400":
+          description: Ошибка тела запроса.
+
+        "401":
+          description: Пользователь не авторизован.
+
+        "403":
+          description: Карточка фильма не принадлежит к пользователю.
+
+    delete:
+      tags:
+        - films
+      summary: Удаление карточки фильма
+      description: Удаление карточки фильма.
+
+      responses:
+        "200":
+          description: Карточка фильма удалена.
+
+        "401":
+          description: Пользователь не авторизован.
+
+        "403":
+          description: Карточка фильма не принадлежит к пользователю.
+
+  /film/promo:
+    get:
+      tags:
+        - films
+      summary: Получение детальной информации по промо фильму
+      description: Получение детальной информации по промо фильму.
+
+      responses:
+        "200":
+          description: Детальная информация по промо фильму. Объект фильма.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/film'
+
+
+  /films:
+    get:
+      tags:
+        - films
+      summary: Получение списка фильмов
+      description: Получение списка фильмов.
+
+      responses:
+        "200":
+          description: Возвращает список фильмов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listFilms'
+
+  /films/genre/{:genre}:
+    get:
+      tags:
+        - films
+      summary: Получение списка фильмов по жанру
+      description: Получение списка фильмов по жанру.
+
+      responses:
+        "200":
+          description: Возвращает список фильмов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listFilms'
+
+  /films/favorite:
+    get:
+      tags:
+        - films
+      summary: Получение списка фильмов к просмотру
+      description: Получение списка фильмов к просмотру.
+
+      responses:
+        "200":
+          description: Возвращает список фильмов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listFilms'
+
+        "401":
+          description: Пользователь не авторизован.
+
+  /films/favorite/{filmId}/{status}:
+    post:
+      tags:
+        - films
+      summary: Добавить/удалить фильм из списка «К просмотру»
+      description: Добавить/удалить фильм из списка «К просмотру»
+
+      responses:
+        "200":
+          description: Запрос выполнен успешно.
+
+        "401":
+          description: Пользователь не авторизован.
+
+
+  /comments/{filmId}:
+    get:
+      tags:
+        - comments
+      summary: Получение списка комментариев по фильму
+      description: Получение списка комментариев по фильму.
+
+      responses:
+        "200":
+          description: Возвращает список комментариев.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/comment'
+
+    post:
+      tags:
+        - comments
+      summary: Добавление нового комментария к фильму
+      description: Добавляет новый комментарий к фильму.
+
+      requestBody:
+        description: Информация по новому комментарию.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createComment'
+        required: true
+
+      responses:
+        "200":
+          description: Комментарий добавлен. Объект комментария.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/comment'
+
+        "400":
+          description: Ошибка тела запроса.
+
+        "401":
+          description: Пользователь не авторизован.
+
+  /login:
+    get:
+      tags:
+        - users
+      summary: Проверка состояния пользователя
+      description: Выполняет проверку аутентификации пользователя.
+
+      responses:
+        "200":
+          description: Пользователь зарегистрирован. Объект пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+        "401":
+          description: Пользователь не авторизован.
+
+    post:
+      tags:
+        - users
+      summary: Вход в закрытую часть приложения
+      description: Выполняет аутентификацию и авторизацию пользователя.
+
+      requestBody:
+        description: Информация для аутентификации пользователя.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/loginUser'
+        required: true
+
+      responses:
+        "200":
+          description: Аутентификация и авторизация выполнена.
+          content:
+            application/json:
+              schema:
+                type: object
+
+                properties:
+                  token:
+                    type: string
+                    example: T2xpdmVyLmNvbm5lckBnbWFpbC5jb20=
+
+        "400":
+          description: Ошибка тела запроса.
+
+        "401":
+          description: Пользователь не авторизован.
+
+  /register:
+    post:
+      tags:
+        - users
+      summary: Регистрация пользователя
+      description: Регистрирует нового пользователя.
+
+      requestBody:
+        description: Информация для создания нового пользователя.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createUser'
+        required: true
+
+      responses:
+        "201":
+          description: Пользователь зарегистрирован. Объект пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+        "400":
+          description: Ошибка тела запроса.
+
+        "409":
+          description: Пользователь с таким email уже существует.
+
+  /logout:
+    delete:
+      tags:
+        - users
+      summary: Выход из закрытой части приложения
+      description: Выход из закрытой части приложения.
+
+      responses:
+        "204":
+          description: Пользовательский сенс завершен.
+
+        "404":
+          description: Ошибка авторизации пользователя.
+
+components:
+  schemas:
+
+    createFilm:
+      type: object
+
+      properties:
+        name:
+          type: string
+          example: Snatch
+
+        description:
+          type: string
+          example: Виновен или нет? Какая разница. Исход один.
+
+        date:
+          type: string
+          format: date
+          example: 2010-03-23
+
+        genre:
+          type: string
+          enum: ['Comedy','Crime','Documentary','Drama','Horror','Family','Romance','Scifi','Thriller']
+          example: Crime
+
+        released:
+          type: integer
+          example: 444
+
+        previewVideoLink:
+          type: string
+          example: https://preview.mp4
+
+        videoLink:
+          type: string
+          example: https://preview.mp4
+
+        actors:
+          type: array
+          items:
+            type: string
+          example: Поль Бельмондо, Рене Зеллвегер, Сергей Безруков
+
+        director:
+          type: string
+          example: Джеймс Кэмерон
+
+        runTime:
+          type: integer
+          example: 333
+
+        userId:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        posterImage:
+          type: string
+          example: dark-tower.jpg
+
+        backgroundImage:
+          type: string
+          example: dark-tower.jpg
+
+        backgroundColor:
+          type: string
+          example: #FFFFFF
+
+    film:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        name:
+          type: string
+          example: Snatch
+
+        description:
+          type: string
+          example: Виновен или нет? Какая разница. Исход один.
+
+        date:
+          type: string
+          format: date
+          example: 2010-03-23
+
+        genre:
+          type: string
+          enum: ['Comedy','Crime','Documentary','Drama','Horror','Family','Romance','Scifi','Thriller']
+          example: Crime
+
+        released:
+          type: integer
+          example: 444
+
+        rating:
+          type: integer
+          example: 333
+
+        previewVideoLink:
+          type: string
+          example: https://preview.mp4
+
+        videoLink:
+          type: string
+          example: https://preview.mp4
+
+        actors:
+          type: array
+          items:
+            type: string
+          example: Поль Бельмондо, Рене Зеллвегер, Сергей Безруков
+
+        director:
+          type: string
+          example: Джеймс Кэмерон
+
+        runTime:
+          type: integer
+          example: 333
+
+        commentCount:
+          type: integer
+          example: 333
+
+        user:
+          $ref: '#/components/schemas/user'
+
+        posterImage:
+          type: string
+          example: dark-tower.jpg
+
+        backgroundImage:
+          type: string
+          example: dark-tower.jpg
+
+        backgroundColor:
+          type: string
+          example: #FFFFFF
+
+    editFilm:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        name:
+          type: string
+          example: Snatch
+
+        description:
+          type: string
+          example: Виновен или нет? Какая разница. Исход один.
+
+        date:
+          type: string
+          format: date
+          example: 2010-03-23
+
+        genre:
+          type: string
+          enum: ['Comedy','Crime','Documentary','Drama','Horror','Family','Romance','Scifi','Thriller']
+          example: Crime
+
+        released:
+          type: integer
+          example: 444
+
+        previewVideoLink:
+          type: string
+          example: https://preview.mp4
+
+        videoLink:
+          type: string
+          example: https://preview.mp4
+
+        actors:
+          type: array
+          items:
+            type: string
+          example: Поль Бельмондо, Рене Зеллвегер, Сергей Безруков
+
+        director:
+          type: string
+          example: Джеймс Кэмерон
+
+        runTime:
+          type: integer
+          example: 333
+
+        userId:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        posterImage:
+          type: string
+          example: dark-tower.jpg
+
+        backgroundImage:
+          type: string
+          example: dark-tower.jpg
+
+        backgroundColor:
+          type: string
+          example: #FFFFFF
+
+
+    listFilms:
+      type: array
+      items:
+        type: object
+
+        properties:
+          id:
+            type: string
+            example: 6329c3d6a04ab1061c6425ea
+
+          name:
+            type: string
+            example: Snatch
+
+          date:
+            type: string
+            format: date
+            example: 2010-03-23
+
+          genre:
+            type: string
+            example: Crime
+
+          previewVideoLink:
+            type: string
+            example: https://preview.mp4
+
+          user:
+            type: object
+
+            properties:
+              name:
+                type: string
+                example: Dimasik
+
+              email:
+                type: string
+                example: dimasik@htmlacademy.ru
+
+          posterImage:
+            type: string
+            example: dark-tower.jpg
+
+          commentCount:
+            type: integer
+            example: 17
+
+
+    createComment:
+      type: object
+
+      properties:
+        comment:
+          type: string
+          example: Текст комментария здесь.
+
+        rating:
+          type: integer
+          example: 333
+
+        date:
+          type: string
+          format: date
+          example: 2010-03-23
+
+        userId:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+    comment:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        comment:
+          type: string
+          example: Текст комментария здесь.
+
+        rating:
+          type: integer
+          example: 333
+
+        date:
+          type: string
+          format: date
+          example: 2010-03-23
+
+        user:
+          $ref: '#/components/schemas/user'
+
+
+    createUser:
+      type: object
+
+      properties:
+        name:
+          type: string
+          example: Dimasik
+
+        email:
+          type: string
+          example: dimasik@htmlacademy.ru
+
+        avatarImage:
+          type: string
+          example: Face.jpg
+
+        password:
+          type: string
+          example: 123456
+
+    user:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        name:
+          type: string
+          example: Dimasik
+
+        email:
+          type: string
+          example: dimasik@htmlacademy.ru
+
+        avatarImage:
+          type: string
+          example: Face.jpg
+
+    loginUser:
+      type: object
+
+      properties:
+        email:
+          type: string
+          example: dimasik@htmlacademy.ru
+
+        password:
+          type: string
+          example: 123456
