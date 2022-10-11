@@ -1,8 +1,17 @@
 import {DocumentType} from '@typegoose/typegoose';
 import {FilmEntity} from './film.entity.js';
-import CreateOfferDto from './dto/create-film.dto.js';
+import CreateFilmDto from './dto/create-film.dto.js';
+import UpdateFilmDto from './dto/update-film.dto.js';
 
 export interface FilmServiceInterface {
-  create(dto: CreateOfferDto): Promise<DocumentType<FilmEntity>>;
-  findById(offerId: string): Promise<DocumentType<FilmEntity> | null>;
+  create(dto: CreateFilmDto): Promise<DocumentType<FilmEntity>>;
+  findById(filmId: string): Promise<DocumentType<FilmEntity> | null>;
+  exists(filmId: string): Promise<boolean>;
+  deleteById(filmId: string): Promise<DocumentType<FilmEntity> | null>;
+  updateById(filmId: string, dto: UpdateFilmDto): Promise<DocumentType<FilmEntity> | null>;
+  incCommentCount(filmId: string): Promise<DocumentType<FilmEntity> | null>;
+  find(count?: number): Promise<DocumentType<FilmEntity>[]>;
+  findByGenre(genre: string, count?: number): Promise<DocumentType<FilmEntity>[]>;
+  findRated(count?: number): Promise<DocumentType<FilmEntity>[]>;
+  findDiscussed(count?: number): Promise<DocumentType<FilmEntity>[]>;
 }
