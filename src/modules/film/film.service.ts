@@ -68,6 +68,14 @@ export default class FilmService implements FilmServiceInterface {
       .exec();
   }
 
+  public async findPromo(): Promise<DocumentType<FilmEntity> | null> {
+    return this.filmModel
+      .findOne()
+      .sort({createdAt: SortType.Down})
+      .populate(['userId'])
+      .exec();
+  }
+
   public async findRated(count?: number): Promise<DocumentType<FilmEntity>[]> {
     const limit = count ?? DEFAULT_FILM_COUNT;
     return this.filmModel

@@ -35,7 +35,7 @@ export default class Application {
     const user = await this.userService.findByEmail('freedom@pisem.local');
     console.log(user);
 
-    const film = await this.filmService.findRated(1);
+    const film = await this.filmService.findPromo();
     console.log(film);
   }
 }

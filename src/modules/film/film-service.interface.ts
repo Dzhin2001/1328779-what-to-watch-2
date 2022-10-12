@@ -12,6 +12,7 @@ export interface FilmServiceInterface {
   incCommentCount(filmId: string): Promise<DocumentType<FilmEntity> | null>;
   find(count?: number): Promise<DocumentType<FilmEntity>[]>;
   findByGenre(genre: string, count?: number): Promise<DocumentType<FilmEntity>[]>;
+  findPromo(): Promise<DocumentType<FilmEntity> | null>;
   findRated(count?: number): Promise<DocumentType<FilmEntity>[]>;
   findDiscussed(count?: number): Promise<DocumentType<FilmEntity>[]>;
 }
