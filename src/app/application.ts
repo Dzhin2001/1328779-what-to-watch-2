@@ -5,13 +5,17 @@ import {ConfigInterface} from '../common/config/config.interface.js';
 import {Component} from '../types/component.types.js';
 import {getURI} from '../utils/db.js';
 import {DatabaseInterface} from '../common/database-client/database.interface.js';
+import { UserServiceInterface } from '../modules/user/user-service.interface.js';
+import { FilmServiceInterface } from '../modules/film/film-service.interface.js';
 
 @injectable()
 export default class Application {
   constructor(
     @inject(Component.LoggerInterface) private logger: LoggerInterface,
     @inject(Component.ConfigInterface) private config: ConfigInterface,
-    @inject(Component.DatabaseInterface) private databaseClient: DatabaseInterface
+    @inject(Component.DatabaseInterface) private databaseClient: DatabaseInterface,
+    @inject(Component.UserServiceInterface) private userService: UserServiceInterface,
+    @inject(Component.FilmServiceInterface) private filmService: FilmServiceInterface
   ) {}
 
   public async init() {
@@ -27,5 +31,11 @@ export default class Application {
     );
 
     await this.databaseClient.connect(uri);
+
+    const user = await this.userService.findByEmail('freedom@pisem.local');
+    console.log(user);
+
+    const film = await this.filmService.findPromo();
+    console.log(film);
   }
 }
