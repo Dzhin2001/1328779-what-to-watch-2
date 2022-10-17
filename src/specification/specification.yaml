@@ -17,7 +17,21 @@ tags:
 
 paths:
 
-  /film:
+  /films:
+    get:
+      tags:
+        - films
+      summary: Получение списка фильмов
+      description: Получение списка фильмов.
+
+      responses:
+        "200":
+          description: Возвращает список фильмов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listFilms'
+
     post:
       tags:
         - films
@@ -46,7 +60,7 @@ paths:
         "401":
           description: Пользователь не авторизован.
 
-  /film/{filmId}:
+  /films/{filmId}:
     get:
       tags:
         - films
@@ -108,7 +122,7 @@ paths:
         "403":
           description: Карточка фильма не принадлежит к пользователю.
 
-  /film/promo:
+  /films/promo:
     get:
       tags:
         - films
@@ -122,22 +136,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/film'
-
-
-  /films:
-    get:
-      tags:
-        - films
-      summary: Получение списка фильмов
-      description: Получение списка фильмов.
-
-      responses:
-        "200":
-          description: Возвращает список фильмов.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/listFilms'
 
   /films/genre/{:genre}:
     get:
@@ -154,7 +152,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/listFilms'
 
-  /films/favorite:
+  /favorite:
     get:
       tags:
         - films
@@ -172,7 +170,7 @@ paths:
         "401":
           description: Пользователь не авторизован.
 
-  /films/favorite/{filmId}/{status}:
+  /favorite/{filmId}/{status}:
     post:
       tags:
         - films
@@ -232,7 +230,7 @@ paths:
         "401":
           description: Пользователь не авторизован.
 
-  /login:
+  /users/login:
     get:
       tags:
         - users
@@ -283,7 +281,7 @@ paths:
         "401":
           description: Пользователь не авторизован.
 
-  /register:
+  /users/register:
     post:
       tags:
         - users
@@ -312,7 +310,7 @@ paths:
         "409":
           description: Пользователь с таким email уже существует.
 
-  /logout:
+  /users/logout:
     delete:
       tags:
         - users

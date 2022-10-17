@@ -1,0 +1,80 @@
+GET http://localhost:3333/api HTTP/1.1
+
+###
+
+# Фильм
+## Получить список категорий
+
+GET http://localhost:3333/films HTTP/1.1
+Content-Type: application/json
+
+###
+## Создать новый фильм
+
+POST http://localhost:3333/films HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Назад в будущее",
+
+  "description": "Программиста возвращается назад в будущее, чтобы купить биткоиноф.",
+
+  "date": "2011-11-11",
+
+  "genre": "Scifi",
+
+  "released": 2033,
+
+  "rating": 1.0,
+
+  "previewVideoLink": "squre.mp4",
+
+  "videoLink": "squre.mp4",
+
+  "actors": ["Прохоров", "бабушка Прохора", "мама Прошки"],
+
+  "director": "Прохоров",
+
+  "runTime": 13,
+
+  "commentCount": 1,
+
+  "userId": "633b4e5674561e74bc53455e",
+
+  "posterImage": "MyFace.jpg",
+
+  "backgroundImage": "MyBack.jpg",
+
+  "backgroundColor": "#070707"
+
+}
+
+###
+
+# Пользователи
+
+## Регистрация пользователя
+
+POST http://localhost:3333/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Джек Востмеркин",
+  "email": "jeck@hacker.net",
+  "avatarImage": "JackFace.jpg",
+  "password": "password"
+}
+
+###
+
+## Авторизация пользователя
+
+POST http://localhost:3333/users/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "jeck@hacker.net",
+  "password": "password"
+}
+
+###

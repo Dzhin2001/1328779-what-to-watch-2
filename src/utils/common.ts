@@ -1,4 +1,6 @@
 import crypto from 'crypto';
+import {plainToInstance} from 'class-transformer';
+import {ClassConstructor} from 'class-transformer/types/interfaces/class-constructor.type.js';
 import { GenreTypeEnum } from '../types/genre-type.enum.js';
 import { FilmType } from '../types/film.type.js';
 import {UserType} from '../types/user.type.js';
@@ -58,3 +60,10 @@ export const createFilm = (row: string) => {
 
 export const getErrorMessage = (error: unknown): string =>
   error instanceof Error ? error.message : '';
+
+export const fillDTO = <T, V>(someDto: ClassConstructor<T>, plainObject: V) =>
+  plainToInstance(someDto, plainObject, {excludeExtraneousValues: true});
+
+export const createErrorObject = (message: string) => ({
+  error: message,
+});
