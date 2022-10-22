@@ -12,6 +12,9 @@ export interface CommentEntity extends defaultClasses.Base {}
 })
 export class CommentEntity extends defaultClasses.TimeStamps {
   @prop({trim: true, required: true})
+  public filmId!: string;
+
+  @prop({trim: true, required: true})
   public comment!: string;
 
   @prop({required: true})
