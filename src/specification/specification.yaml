@@ -75,7 +75,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/film'
 
-    put:
+    patch:
       tags:
         - films
       summary: Редактирование карточки фильма

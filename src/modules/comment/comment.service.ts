@@ -15,15 +15,16 @@ export default class CommentService implements CommentServiceInterface {
   ) {}
 
   public async create(dto: CreateCommentDto): Promise<DocumentType<CommentEntity>> {
-    const result = await this.commentModel.create(dto);
+    const comment = await this.commentModel.create(dto);
     this.logger.info(`New comment created: ${dto.comment}`);
 
-    return result;
+    return comment.populate('userId');
   }
 
   public async findByFilmId(filmId: string): Promise<DocumentType<CommentEntity>[]> {
     return await this.commentModel
       .find({filmId},{},{limit: DEFAULT_COMMENT_COUNT})
+      .populate(['userId'])
       .exec();
   }
 
