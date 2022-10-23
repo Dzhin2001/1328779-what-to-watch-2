@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express';
 import {nanoid} from 'nanoid';
 import multer, {diskStorage} from 'multer';
-// import mime from 'mime';
+import mime from 'mime-types';
 import {MiddlewareInterface} from '../../types/middleware.interface.js';
 import {LoggerInterface} from '../logger/logger.interface';
 
@@ -20,8 +20,8 @@ export class UploadFileMiddleware implements MiddlewareInterface {
 
         this.logger.info(`Middleware UploadFileMiddleware: file = ${JSON.stringify(file)}.`);
 
-        // const extension = mime.getExtension(file.mimetype);
-        const extension = 'png';
+        const extension = mime.extension(file.mimetype);
+        // const extension = 'png';
         const filename = nanoid();
 
         this.logger.info(`Middleware UploadFileMiddleware: new file name = ${filename}.${extension}.`);
