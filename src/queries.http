@@ -137,8 +137,22 @@ POST http://localhost:3333/users/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "jeck@hacker.net",
+  "email": "jeck8@hacker.net",
   "password": "password"
 }
+
+###
+
+## Отправка аватарки пользователю
+
+POST http://localhost:3333/users/635451666e720e6273857a11/avatar HTTP/1.1
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="avatar"; filename="Avatar.png"
+Content-Type: image/png
+
+< /Users/SuperDzhin/Downloads/Avatar.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 ###

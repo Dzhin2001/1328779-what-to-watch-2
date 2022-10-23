@@ -1,5 +1,5 @@
 import {GenreTypeEnum} from '../../../types/genre-type.enum.js';
-import {Matches, IsArray, IsDateString, IsEnum, IsInt, IsMongoId, MaxLength, MinLength} from 'class-validator';
+import {Matches, IsArray, IsDateString, IsString, IsEnum, IsInt, IsMongoId, MaxLength, MinLength} from 'class-validator';
 
 export default class CreateFilmDto {
 
@@ -23,7 +23,10 @@ export default class CreateFilmDto {
   @IsInt({message: 'Rating must be an integer'})
   public rating!: number;
 
+  @IsString({message: 'PreviewVideoLink is required'})
   public previewVideoLink!: string;
+
+  @IsString({message: 'VideoLink is required'})
   public videoLink!: string;
 
   @IsArray({message: 'Field actors must be an array'})
@@ -42,11 +45,14 @@ export default class CreateFilmDto {
   @IsMongoId({message: 'UserId field must be valid an id'})
   public userId!: string;
 
+  @IsString({message: 'PosterImage is required'})
   @Matches(/\S+.jpg$/)
   public posterImage!: string;
 
+  @IsString({message: 'BackgroundImage is required'})
   @Matches(/\S+.jpg$/)
   public backgroundImage!: string;
 
+  @IsString({message: 'BackgroundColor is required'})
   public backgroundColor!: string;
 }
