@@ -1,5 +1,5 @@
 import {GenreTypeEnum} from '../../../types/genre-type.enum.js';
-import {Matches, IsArray, IsDateString, IsString, IsEnum, IsInt, IsMongoId, MaxLength, MinLength} from 'class-validator';
+import {Matches, IsArray, IsDateString, IsString, IsEnum, IsInt, MaxLength, MinLength} from 'class-validator';
 
 export default class CreateFilmDto {
 
@@ -42,7 +42,6 @@ export default class CreateFilmDto {
   @IsInt({message: 'CommentCount must be an integer'})
   public commentCount!: number;
 
-  @IsMongoId({message: 'UserId field must be valid an id'})
   public userId!: string;
 
   @IsString({message: 'PosterImage is required'})
