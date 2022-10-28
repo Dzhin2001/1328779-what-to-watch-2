@@ -21,6 +21,7 @@ export default class Application {
     @inject(Component.UserController) private userController: ControllerInterface,
     @inject(Component.FilmController) private filmController: ControllerInterface,
     @inject(Component.CommentController) private commentController: ControllerInterface,
+    @inject(Component.FavoriteController) private favoriteController: ControllerInterface,
     @inject(Component.ExceptionFilterInterface) private exceptionFilter: ExceptionFilterInterface,
   ) {
     this.expressApp = express();
@@ -30,6 +31,7 @@ export default class Application {
     this.expressApp.use('/users', this.userController.router);
     this.expressApp.use('/films', this.filmController.router);
     this.expressApp.use('/comments', this.commentController.router);
+    this.expressApp.use('/favorites', this.favoriteController.router);
   }
 
   public initMiddleware() {

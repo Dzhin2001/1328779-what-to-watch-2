@@ -18,6 +18,9 @@ import {PrivateRouteMiddleware} from '../../common/middlewares/private-route.mid
 import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
 import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
 import {DocumentExistsMiddleware} from '../../common/middlewares/document-exists.middleware.js';
+import FilmListResponse from './response/film-list.response.js';
+import {GenreTypeEnum} from '../../types/genre-type.enum.js';
+import HttpError from '../../common/errors/http-error.js';
 
 type ParamsGetFilm = {
   filmId: string;
@@ -38,7 +41,16 @@ export default class FilmController extends Controller {
 
     this.logger.info('Register routes for FilmController…');
 
-    this.addRoute({path: '/', method: HttpMethod.Get, handler: this.index});
+    this.addRoute({
+      path: '/',
+      method: HttpMethod.Get,
+      handler: this.index
+    });
+    this.addRoute({
+      path: '/genre/:genre',
+      method: HttpMethod.Get,
+      handler: this.getFilmsByGenre
+    });
     this.addRoute({
       path: '/',
       method: HttpMethod.Post,
@@ -78,7 +90,6 @@ export default class FilmController extends Controller {
         new ValidateDtoMiddleware(UpdateFilmDto),
       ]
     });
-    this.addRoute({path: '/genre/:genre', method: HttpMethod.Get, handler: this.getFilmsByGenre});
     this.addRoute({
       path: '/:filmId/comments',
       method: HttpMethod.Get,
@@ -88,12 +99,41 @@ export default class FilmController extends Controller {
         new DocumentExistsMiddleware(this.filmService, 'Film', 'filmId'),
       ]
     });
+    this.addRoute({
+      path: '/:filmId/rating',
+      method: HttpMethod.Get,
+      handler: this.getRating,
+      middlewares: [
+        new ValidateObjectIdMiddleware('filmId'),
+        new DocumentExistsMiddleware(this.filmService, 'Film', 'filmId'),
+      ]
+    });
   }
 
-  public async index(_req: Request, res: Response): Promise<void> {
-    const films = await this.filmService.find();
-    const filmResponse = fillDTO(FilmResponse, films);
-    this.send(res, StatusCodes.OK, filmResponse);
+  public async index(
+    {user, query}: Request<Record<string, unknown>, unknown, unknown, RequestQuery>,
+    res: Response
+  ): Promise<void> {
+    const userId = user ? user.id : undefined;
+    const films = await this.filmService.find(userId, undefined, query.limit);
+    this.ok(res, fillDTO(FilmListResponse, films));
+  }
+
+  public async getFilmsByGenre(
+    {user, params, query}: Request<core.ParamsDictionary | ParamsGetGenre, unknown, unknown, RequestQuery>,
+    res: Response
+  ):Promise<void> {
+    const userId = user ? user.id : undefined;
+    const genre = params.genre;
+    if(Object.values(GenreTypeEnum).findIndex((e)=> e === genre) < 0 ) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Genre "${genre}" not found.`,
+        'FilmController'
+      );
+    }
+    const films = await this.filmService.find(userId, genre, query.limit);
+    this.send(res, StatusCodes.OK, fillDTO(FilmListResponse, films));
   }
 
   public async create(
@@ -131,19 +171,19 @@ export default class FilmController extends Controller {
     this.ok(res, fillDTO(FilmResponse, film));
   }
 
-  public async getFilmsByGenre(
-    {params, query}: Request<core.ParamsDictionary | ParamsGetGenre, unknown, unknown, RequestQuery>,
-    res: Response
-  ):Promise<void> {
-    const films = await this.filmService.findByGenre(params.genre, query.limit);
-    this.ok(res, fillDTO(FilmResponse, films));
-  }
-
   public async getComments(
     {params}: Request<core.ParamsDictionary | ParamsGetFilm, object, object>,
     res: Response
   ): Promise<void> {
     const comments = await this.commentService.findByFilmId(params.filmId);
     this.ok(res, fillDTO(CommentResponse, comments));
+  }
+
+  public async getRating(
+    {params}: Request<core.ParamsDictionary | ParamsGetFilm, object, object>,
+    res: Response
+  ): Promise<void> {
+    const comments = await this.commentService.getRatingByFilmId(params.filmId);
+    this.ok(res, (comments));
   }
 }

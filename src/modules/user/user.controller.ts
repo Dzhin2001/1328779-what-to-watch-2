@@ -13,10 +13,10 @@ import UserResponse from './response/user.response.js';
 import CreateUserDto from './dto/create-user.dto.js';
 import LoginUserDto from './dto/login-user.dto.js';
 import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
-import {ValidateObjectIdMiddleware} from '../../common/middlewares/validate-objectid.middleware.js';
 import {UploadFileMiddleware} from '../../common/middlewares/upload-file.middleware.js';
 import LoggedUserResponse from './response/logged-user.response.js';
 import {JWT_ALGORITM} from './user.constant.js';
+import {PrivateRouteMiddleware} from '../../common/middlewares/private-route.middleware.js';
 
 @injectable()
 export default class UserController extends Controller {
@@ -46,11 +46,11 @@ export default class UserController extends Controller {
       handler: this.login
     });
     this.addRoute({
-      path: '/:userId/avatar',
+      path: '/avatar',
       method: HttpMethod.Post,
       handler: this.uploadAvatar,
       middlewares: [
-        new ValidateObjectIdMiddleware('userId'),
+        new PrivateRouteMiddleware(),
         new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'avatar'),
       ]
     });

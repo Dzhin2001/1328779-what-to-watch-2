@@ -35,11 +35,9 @@ export default class CommentController extends Controller {
   }
 
   public async create(
-    req: Request<object, object, CreateCommentDto>,
+    {body, user}: Request<object, object, CreateCommentDto>,
     res: Response
   ): Promise<void> {
-
-    const {body} = req;
 
     if (!await this.filmService.exists(body.filmId)) {
       throw new HttpError(
@@ -49,8 +47,10 @@ export default class CommentController extends Controller {
       );
     }
 
-    const comment = await this.commentService.create({...body, userId: req.user.id});
-    await this.filmService.incCommentCount(body.filmId);
+    const comment = await this.commentService.create({...body, userId: user.id});
+    const filmRating = await this.commentService.getRatingByFilmId(body.filmId);
+    await this.filmService.updateRatingAndCommentCount(body.filmId, filmRating ? filmRating : 0);
     this.created(res, fillDTO(CommentResponse, comment));
   }
+
 }

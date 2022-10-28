@@ -6,6 +6,7 @@ import {CommentEntity} from './comment.entity.js';
 import {Component} from '../../types/component.types.js';
 import {LoggerInterface} from '../../common/logger/logger.interface.js';
 import {DEFAULT_COMMENT_COUNT} from './comment.constant.js';
+import {Types} from 'mongoose';
 
 @injectable()
 export default class CommentService implements CommentServiceInterface {
@@ -17,7 +18,6 @@ export default class CommentService implements CommentServiceInterface {
   public async create(dto: CreateCommentDto): Promise<DocumentType<CommentEntity>> {
     const comment = await this.commentModel.create(dto);
     this.logger.info(`New comment created: ${dto.comment}`);
-
     return comment.populate('userId');
   }
 
@@ -28,11 +28,31 @@ export default class CommentService implements CommentServiceInterface {
       .exec();
   }
 
-  public async deleteByFilmId(filmId: string): Promise<number | null> {
-    const result = await this.commentModel
-      .deleteMany({filmId})
+  public async getRatingByFilmId(filmId: string): Promise<number | null> {
+    const [result] = await this.commentModel
+      .aggregate([
+        {
+          $match:
+            {
+              'filmId': new Types.ObjectId(filmId),
+            }
+        },
+        {
+          $project:
+            {
+              rating: 1
+            }
+        },
+        {
+          $group:
+            {
+              _id: null,
+              rating: { $avg: '$rating' },
+            }
+        }
+      ])
       .exec();
-
-    return result.deletedCount;
+    return result === undefined ? 0 : result.rating;
   }
+
 }

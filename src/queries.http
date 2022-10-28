@@ -5,18 +5,30 @@ GET http://localhost:3333/api HTTP/1.1
 # Фильм
 ## Получить список фильмов
 
-GET http://localhost:3333/films HTTP/1.1
+GET http://localhost:3333/films?limit=3 HTTP/1.1
 Content-Type: application/json
 
 ###
-## фильм по идентификатору
+## Список фильмов для авторизованного пользователя
 
-GET http://localhost:3333/films/633b4fafc6bfae16936bbe69 HTTP/1.1
+GET http://localhost:3333/films HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2s4QGhhY2tlci5uZXQiLCJpZCI6IjYzNTQ1MTY2NmU3MjBlNjI3Mzg1N2ExMSIsImlhdCI6MTY2Njg5ODAyMSwiZXhwIjoxNjY3MDcwODIxfQ.j8OGOy5ijQelFwkk8BGnXDe58uwoW6uAZsGYinJGNA4
 
 ###
 ## Список фильмов по жанру
 
-GET http://localhost:3333/films/genre/Crime?limit=2 HTTP/1.1
+GET http://localhost:3333/films/genre/Crime HTTP/1.1
+
+###
+## Список фильмов по жанру для авторизованного пользователя
+
+GET http://localhost:3333/films/genre/Crime HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2s4QGhhY2tlci5uZXQiLCJpZCI6IjYzNTQ1MTY2NmU3MjBlNjI3Mzg1N2ExMSIsImlhdCI6MTY2Njg5ODAyMSwiZXhwIjoxNjY3MDcwODIxfQ.j8OGOy5ijQelFwkk8BGnXDe58uwoW6uAZsGYinJGNA4
+
+###
+## фильм по идентификатору
+
+GET http://localhost:3333/films/633b4fafc6bfae16936bbe84 HTTP/1.1
 
 ###
 ## Список комментариев к фильму
@@ -24,11 +36,16 @@ GET http://localhost:3333/films/genre/Crime?limit=2 HTTP/1.1
 GET http://localhost:3333/films/633b4fafc6bfae16936bbe69/comments HTTP/1.1
 
 ###
+## Общий рейтинг по фильму
+
+GET http://localhost:3333/films/633b4fafc6bfae16936bbe84/rating HTTP/1.1
+
+###
 ## Создать новый фильм
 
 POST http://localhost:3333/films HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2s4QGhhY2tlci5uZXQiLCJpZCI6IjYzNTQ1MTY2NmU3MjBlNjI3Mzg1N2ExMSIsImlhdCI6MTY2NjcyNDc2MCwiZXhwIjoxNjY2ODk3NTYwfQ.cLuwvASZMU_lpF8-S-10G2-R28IPQMv57vbDTWCdbZI
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2s4QGhhY2tlci5uZXQiLCJpZCI6IjYzNTQ1MTY2NmU3MjBlNjI3Mzg1N2ExMSIsImlhdCI6MTY2Njg5ODAyMSwiZXhwIjoxNjY3MDcwODIxfQ.j8OGOy5ijQelFwkk8BGnXDe58uwoW6uAZsGYinJGNA4
 
 
 {
@@ -70,7 +87,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2s4QGhhY2tlci5uZXQiL
 
 PATCH http://localhost:3333/films/6352eb248c06a2d517949dbb HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2s4QGhhY2tlci5uZXQiLCJpZCI6IjYzNTQ1MTY2NmU3MjBlNjI3Mzg1N2ExMSIsImlhdCI6MTY2NjcyNDc2MCwiZXhwIjoxNjY2ODk3NTYwfQ.cLuwvASZMU_lpF8-S-10G2-R28IPQMv57vbDTWCdbZI
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2s4QGhhY2tlci5uZXQiLCJpZCI6IjYzNTQ1MTY2NmU3MjBlNjI3Mzg1N2ExMSIsImlhdCI6MTY2Njg5ODAyMSwiZXhwIjoxNjY3MDcwODIxfQ.j8OGOy5ijQelFwkk8BGnXDe58uwoW6uAZsGYinJGNA4
 
 {
   "name": "Ночной дозор 3",
@@ -81,7 +98,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2s4QGhhY2tlci5uZXQiL
 ## Удаление фильма
 
 DELETE http://localhost:3333/films/6352eb85df7ba3c3d9ff1a11 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2s4QGhhY2tlci5uZXQiLCJpZCI6IjYzNTQ1MTY2NmU3MjBlNjI3Mzg1N2ExMSIsImlhdCI6MTY2NjcyNDc2MCwiZXhwIjoxNjY2ODk3NTYwfQ.cLuwvASZMU_lpF8-S-10G2-R28IPQMv57vbDTWCdbZI
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2s4QGhhY2tlci5uZXQiLCJpZCI6IjYzNTQ1MTY2NmU3MjBlNjI3Mzg1N2ExMSIsImlhdCI6MTY2Njg5ODAyMSwiZXhwIjoxNjY3MDcwODIxfQ.j8OGOy5ijQelFwkk8BGnXDe58uwoW6uAZsGYinJGNA4
 
 ###
 
@@ -91,7 +108,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2s4QGhhY2tlci5uZXQiL
 
 POST http://localhost:3333/comments HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2s4QGhhY2tlci5uZXQiLCJpZCI6IjYzNTQ1MTY2NmU3MjBlNjI3Mzg1N2ExMSIsImlhdCI6MTY2NjcyNDc2MCwiZXhwIjoxNjY2ODk3NTYwfQ.cLuwvASZMU_lpF8-S-10G2-R28IPQMv57vbDTWCdbZI
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2s4QGhhY2tlci5uZXQiLCJpZCI6IjYzNTQ1MTY2NmU3MjBlNjI3Mzg1N2ExMSIsImlhdCI6MTY2Njg5ODAyMSwiZXhwIjoxNjY3MDcwODIxfQ.j8OGOy5ijQelFwkk8BGnXDe58uwoW6uAZsGYinJGNA4
 
 {
   "filmId": "633b4fafc6bfae16936bbe69",
@@ -108,13 +125,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2s4QGhhY2tlci5uZXQiL
 
 POST http://localhost:3333/comments HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2s4QGhhY2tlci5uZXQiLCJpZCI6IjYzNTQ1MTY2NmU3MjBlNjI3Mzg1N2ExMSIsImlhdCI6MTY2NjcyNDc2MCwiZXhwIjoxNjY2ODk3NTYwfQ.cLuwvASZMU_lpF8-S-10G2-R28IPQMv57vbDTWCdbZI
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2s4QGhhY2tlci5uZXQiLCJpZCI6IjYzNTQ1MTY2NmU3MjBlNjI3Mzg1N2ExMSIsImlhdCI6MTY2Njg5ODAyMSwiZXhwIjoxNjY3MDcwODIxfQ.j8OGOy5ijQelFwkk8BGnXDe58uwoW6uAZsGYinJGNA4
 
 {
   "filmId": "633b4fafc6bfae16936bbe84",
-  "comment": "Тестирование добавления комментария 3",
-  "date": "2022-11-22",
-  "rating": 9
+  "comment": "Тестирование добавления комментария 5",
+  "date": "2022-10-22",
+  "rating": 6
 }
 
 
@@ -139,7 +156,7 @@ Content-Type: application/json
 
 GET http://localhost:3333/users/login HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2s4QGhhY2tlci5uZXQiLCJpZCI6IjYzNTQ1MTY2NmU3MjBlNjI3Mzg1N2ExMSIsImlhdCI6MTY2NjcyNDc2MCwiZXhwIjoxNjY2ODk3NTYwfQ.cLuwvASZMU_lpF8-S-10G2-R28IPQMv57vbDTWCdbZI
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2s4QGhhY2tlci5uZXQiLCJpZCI6IjYzNTQ1MTY2NmU3MjBlNjI3Mzg1N2ExMSIsImlhdCI6MTY2Njg5ODAyMSwiZXhwIjoxNjY3MDcwODIxfQ.j8OGOy5ijQelFwkk8BGnXDe58uwoW6uAZsGYinJGNA4
 
 ###
 
@@ -149,7 +166,7 @@ POST http://localhost:3333/users/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "jeck8@hacker.net",
+  "email": "jeck@hacker.net",
   "password": "password"
 }
 
@@ -168,3 +185,59 @@ Content-Type: image/png
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 ###
+# Список избранных фильмов (пользователь 1)
+
+## Список любимых фильмов (пользователь 1)
+
+GET http://localhost:3333/favorites HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2s4QGhhY2tlci5uZXQiLCJpZCI6IjYzNTQ1MTY2NmU3MjBlNjI3Mzg1N2ExMSIsImlhdCI6MTY2Njg5ODAyMSwiZXhwIjoxNjY3MDcwODIxfQ.j8OGOy5ijQelFwkk8BGnXDe58uwoW6uAZsGYinJGNA4
+
+
+###
+
+## Изменение статуса (пользователь 1)
+
+POST http://localhost:3333/favorites/633b4fafc6bfae16936bbe69/1 HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2s4QGhhY2tlci5uZXQiLCJpZCI6IjYzNTQ1MTY2NmU3MjBlNjI3Mzg1N2ExMSIsImlhdCI6MTY2Njg5ODAyMSwiZXhwIjoxNjY3MDcwODIxfQ.j8OGOy5ijQelFwkk8BGnXDe58uwoW6uAZsGYinJGNA4
+
+
+###
+
+## Изменение статуса 2 (пользователь 1)
+
+POST http://localhost:3333/favorites/633b4fafc6bfae16936bbe6c/1 HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2s4QGhhY2tlci5uZXQiLCJpZCI6IjYzNTQ1MTY2NmU3MjBlNjI3Mzg1N2ExMSIsImlhdCI6MTY2Njg5ODAyMSwiZXhwIjoxNjY3MDcwODIxfQ.j8OGOy5ijQelFwkk8BGnXDe58uwoW6uAZsGYinJGNA4
+
+
+###
+
+## Список любимых фильмов (пользователь 2)
+
+GET http://localhost:3333/favorites HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2tAaGFja2VyLm5ldCIsImlkIjoiNjM0YzUxZTlkNGNkMTJmOTNjZDlmZTNkIiwiaWF0IjoxNjY2OTQ0OTU5LCJleHAiOjE2NjcxMTc3NTl9.Xx5NkFelKfNMO9gljF4Gnfk1-RXwAgfxO519O5OYNwU
+
+
+###
+
+## Изменение статуса для пользователя 2
+
+POST http://localhost:3333/favorites/633b4fafc6bfae16936bbe69/1 HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2tAaGFja2VyLm5ldCIsImlkIjoiNjM0YzUxZTlkNGNkMTJmOTNjZDlmZTNkIiwiaWF0IjoxNjY2OTQ0OTU5LCJleHAiOjE2NjcxMTc3NTl9.Xx5NkFelKfNMO9gljF4Gnfk1-RXwAgfxO519O5OYNwU
+
+
+###
+
+## Изменение статуса 2 для пользователя 2
+
+POST http://localhost:3333/favorites/633b4fafc6bfae16936bbe6c/1 HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2tAaGFja2VyLm5ldCIsImlkIjoiNjM0YzUxZTlkNGNkMTJmOTNjZDlmZTNkIiwiaWF0IjoxNjY2OTQ0OTU5LCJleHAiOjE2NjcxMTc3NTl9.Xx5NkFelKfNMO9gljF4Gnfk1-RXwAgfxO519O5OYNwU
+
+###
+
+
