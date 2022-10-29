@@ -10,10 +10,7 @@ export interface FilmServiceInterface extends DocumentExistsInterface {
   exists(filmId: string): Promise<boolean>;
   deleteById(filmId: string): Promise<DocumentType<FilmEntity> | null>;
   updateById(filmId: string, dto: UpdateFilmDto): Promise<DocumentType<FilmEntity> | null>;
-  incCommentCount(filmId: string): Promise<DocumentType<FilmEntity> | null>;
-  find(count?: number): Promise<DocumentType<FilmEntity>[]>;
-  findByGenre(genre: string, count?: number): Promise<DocumentType<FilmEntity>[]>;
+  updateRatingAndCommentCount(filmId: string, filmRating: number): Promise<DocumentType<FilmEntity> | null>;
+  find(userId?: string, genre?: string, count?: number): Promise<DocumentType<FilmEntity>[]>;
   findPromo(): Promise<DocumentType<FilmEntity> | null>;
-  findRated(count?: number): Promise<DocumentType<FilmEntity>[]>;
-  findDiscussed(count?: number): Promise<DocumentType<FilmEntity>[]>;
 }

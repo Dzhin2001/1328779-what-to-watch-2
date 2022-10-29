@@ -8,6 +8,9 @@ import {Component} from '../../types/component.types.js';
 import {LoggerInterface} from '../../common/logger/logger.interface.js';
 import {SortType} from '../../types/sort-type.enum.js';
 import {DEFAULT_FILM_COUNT} from './film.constant.js';
+import {Types} from 'mongoose';
+import {GenreTypeEnum} from '../../types/genre-type.enum.js';
+import {FavoriteTypeEnum} from '../../types/favorite-type.enum.js';
 
 @injectable()
 export default class FilmService implements FilmServiceInterface {
@@ -48,26 +51,80 @@ export default class FilmService implements FilmServiceInterface {
       .exec();
   }
 
-  public async incCommentCount(filmId: string): Promise<DocumentType<FilmEntity> | null> {
+  public async updateRatingAndCommentCount(filmId: string, filmRating: number ): Promise<DocumentType<FilmEntity> | null> {
     return this.filmModel
-      .findByIdAndUpdate(filmId, {'$inc': {commentCount: 1,}}).exec();
-  }
-
-  public async findByGenre(genre: string, count?: number): Promise<DocumentType<FilmEntity>[]> {
-    const limit = count ?? DEFAULT_FILM_COUNT;
-    return this.filmModel
-      .find({genre: genre}, {}, {limit})
-      .populate(['userId'])
+      .findByIdAndUpdate(filmId,
+        {
+          '$set':
+            {
+              rating: filmRating,
+            },
+          '$inc':
+            {
+              commentCount: 1,
+            }
+        })
       .exec();
   }
 
-  public async find(count?: number): Promise<DocumentType<FilmEntity>[]> {
-    const limit = count ?? DEFAULT_FILM_COUNT;
+  public async find(userId?: string, genre?: string, count?: number): Promise<DocumentType<FilmEntity>[]> {
+    const limit = count ? +count : DEFAULT_FILM_COUNT;
+    const genreList = genre ? [genre] : Object.values(GenreTypeEnum);
     return this.filmModel
-      .find()
-      .sort({createdAt: SortType.Down})
-      .limit(limit)
-      .populate(['userId'])
+      .aggregate([
+        {
+          $match: { 'genre': { '$in': genreList } }
+        },
+        {
+          $sort: {createdAt: SortType.Down}
+        },
+        {
+          $lookup:{
+            from: 'favorites',
+            localField: '_id',
+            foreignField: 'filmId',
+            as: 'favorites',
+            pipeline: [
+              {
+                $match: {
+                  userId: new Types.ObjectId(userId),
+                  status: FavoriteTypeEnum.Favorite,
+                }
+              }
+            ]
+          }
+        },
+        {
+          $addFields:
+            {
+              isFavorite:
+              {
+                '$cond': {
+                  if: {
+                    $gt: [{ $size: '$favorites' }, 0]
+                  },
+                  then: true,
+                  else: false
+                }
+              }
+            }
+        },
+        {
+          $unset: 'favorites'
+        },
+        {
+          $lookup:{
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'userId',
+          }
+        },
+        { $unwind : '$userId' },
+        {
+          $limit: limit
+        }
+      ])
       .exec();
   }
 
@@ -75,26 +132,6 @@ export default class FilmService implements FilmServiceInterface {
     return this.filmModel
       .findOne()
       .sort({createdAt: SortType.Down})
-      .populate(['userId'])
-      .exec();
-  }
-
-  public async findRated(count?: number): Promise<DocumentType<FilmEntity>[]> {
-    const limit = count ?? DEFAULT_FILM_COUNT;
-    return this.filmModel
-      .find()
-      .sort({rating: SortType.Down})
-      .limit(limit)
-      .populate(['userId'])
-      .exec();
-  }
-
-  public async findDiscussed(count?: number): Promise<DocumentType<FilmEntity>[]> {
-    const limit = count ?? DEFAULT_FILM_COUNT;
-    return this.filmModel
-      .find()
-      .sort({commentCount: SortType.Down})
-      .limit(limit)
       .populate(['userId'])
       .exec();
   }
