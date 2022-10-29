@@ -62,10 +62,10 @@ export class FilmEntity extends defaultClasses.TimeStamps {
   })
   public userId!: Ref<UserEntity>;
 
-  @prop({trim: true, required: true})
+  @prop({default: ''})
   public posterImage!: string;
 
-  @prop({trim: true, required: true})
+  @prop({default: ''})
   public backgroundImage!: string;
 
   @prop({trim: true, required: true})

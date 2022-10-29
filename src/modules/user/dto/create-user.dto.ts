@@ -1,4 +1,4 @@
-import {Matches, IsEmail, MaxLength, MinLength} from 'class-validator';
+import {IsEmail, MaxLength, MinLength} from 'class-validator';
 
 export default class CreateUserDto {
 
@@ -8,9 +8,6 @@ export default class CreateUserDto {
 
   @IsEmail()
   public email!: string ;
-
-  @Matches(/\S+(?:jpg|png)$/)
-  public avatarImage!: string;
 
   @MinLength(6, {message: 'Minimum password length must be 6'})
   @MaxLength(12, {message: 'Maximum password length must be 12'})

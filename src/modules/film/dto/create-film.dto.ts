@@ -1,5 +1,5 @@
 import {GenreTypeEnum} from '../../../types/genre-type.enum.js';
-import {Matches, IsArray, IsDateString, IsString, IsEnum, IsInt, MaxLength, MinLength} from 'class-validator';
+import {IsArray, IsDateString, IsString, IsEnum, IsInt, MaxLength, MinLength} from 'class-validator';
 
 export default class CreateFilmDto {
 
@@ -43,14 +43,6 @@ export default class CreateFilmDto {
   public commentCount!: number;
 
   public userId!: string;
-
-  @IsString({message: 'PosterImage is required'})
-  @Matches(/\S+.jpg$/)
-  public posterImage!: string;
-
-  @IsString({message: 'BackgroundImage is required'})
-  @Matches(/\S+.jpg$/)
-  public backgroundImage!: string;
 
   @IsString({message: 'BackgroundColor is required'})
   public backgroundColor!: string;

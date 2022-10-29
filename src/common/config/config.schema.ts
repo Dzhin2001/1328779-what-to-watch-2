@@ -3,6 +3,7 @@ import convict from 'convict';import validator from 'convict-format-with-validat
 convict.addFormats(validator);
 
 export type ConfigSchema = {
+  HOST: string,
   PORT: number;
   SALT: string;
   DB_HOST: string;
@@ -12,9 +13,16 @@ export type ConfigSchema = {
   DB_PASSWORD: string;
   UPLOAD_DIRECTORY: string;
   JWT_SECRET: string;
+  STATIC_DIRECTORY_PATH: string,
 }
 
 export const configSchema = convict<ConfigSchema>({
+  HOST: {
+    doc: 'Host where started service',
+    format: String,
+    env: 'HOST',
+    default: '127.0.0.1'
+  },
   PORT: {
     doc: 'Port for incoming connections',
     format: 'port',
@@ -67,5 +75,11 @@ export const configSchema = convict<ConfigSchema>({
     format: String,
     env: 'JWT_SECRET',
     default: null
+  },
+  STATIC_DIRECTORY_PATH: {
+    doc: 'Path to directory with static resources',
+    format: String,
+    env: 'STATIC_DIRECTORY_PATH',
+    default: '/static'
   },
 });

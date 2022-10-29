@@ -7,7 +7,7 @@ import {FilmEntity} from './film.entity.js';
 import {Component} from '../../types/component.types.js';
 import {LoggerInterface} from '../../common/logger/logger.interface.js';
 import {SortType} from '../../types/sort-type.enum.js';
-import {DEFAULT_FILM_COUNT} from './film.constant.js';
+import {DEFAULT_FILM_COUNT, DEFAULT_POSTER_FILE_NAME, DEFAULT_BACKGROUND_FILE_NAME} from './film.constant.js';
 import {Types} from 'mongoose';
 import {GenreTypeEnum} from '../../types/genre-type.enum.js';
 import {FavoriteTypeEnum} from '../../types/favorite-type.enum.js';
@@ -20,7 +20,11 @@ export default class FilmService implements FilmServiceInterface {
   ) {}
 
   public async create(dto: CreateFilmDto): Promise<DocumentType<FilmEntity>> {
-    const result = await this.filmModel.create(dto);
+    const result = await this.filmModel.create({
+      ...dto
+      , posterImage: DEFAULT_POSTER_FILE_NAME
+      , backgroundImage: DEFAULT_BACKGROUND_FILE_NAME
+    });
     this.logger.info(`New film created: ${dto.name}`);
 
     return result;

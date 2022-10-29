@@ -21,6 +21,10 @@ import {DocumentExistsMiddleware} from '../../common/middlewares/document-exists
 import FilmListResponse from './response/film-list.response.js';
 import {GenreTypeEnum} from '../../types/genre-type.enum.js';
 import HttpError from '../../common/errors/http-error.js';
+import {ConfigInterface} from '../../common/config/config.interface.js';
+import {UploadFileMiddleware} from '../../common/middlewares/upload-file.middleware.js';
+import UploadPosterImageResponse from './response/upload-poster-image.response.js';
+import UploadBackgroundImageResponse from './response/upload-background-image.response.js';
 
 type ParamsGetFilm = {
   filmId: string;
@@ -34,10 +38,11 @@ type ParamsGetGenre = {
 export default class FilmController extends Controller {
   constructor(
     @inject(Component.LoggerInterface) logger: LoggerInterface,
+    @inject(Component.ConfigInterface) configService: ConfigInterface,
     @inject(Component.FilmServiceInterface) private readonly filmService: FilmServiceInterface,
     @inject(Component.CommentServiceInterface) private readonly commentService: CommentServiceInterface,
   ) {
-    super(logger);
+    super(logger, configService);
 
     this.logger.info('Register routes for FilmController…');
 
@@ -106,6 +111,26 @@ export default class FilmController extends Controller {
       middlewares: [
         new ValidateObjectIdMiddleware('filmId'),
         new DocumentExistsMiddleware(this.filmService, 'Film', 'filmId'),
+      ]
+    });
+    this.addRoute({
+      path: '/:filmId/posterImage',
+      method: HttpMethod.Post,
+      handler: this.uploadPosterImage,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('filmId'),
+        new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'posterImage'),
+      ]
+    });
+    this.addRoute({
+      path: '/:filmId/backgroundImage',
+      method: HttpMethod.Post,
+      handler: this.uploadBackgroundImage,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('filmId'),
+        new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'backgroundImage'),
       ]
     });
   }
@@ -186,4 +211,19 @@ export default class FilmController extends Controller {
     const comments = await this.commentService.getRatingByFilmId(params.filmId);
     this.ok(res, (comments));
   }
+
+  public async uploadPosterImage(req: Request<core.ParamsDictionary | ParamsGetFilm>, res: Response) {
+    const {filmId} = req.params;
+    const updateDto = { posterImage: req.file?.filename };
+    await this.filmService.updateById(filmId, updateDto);
+    this.created(res, fillDTO(UploadPosterImageResponse, updateDto));
+  }
+
+  public async uploadBackgroundImage(req: Request<core.ParamsDictionary | ParamsGetFilm>, res: Response) {
+    const {filmId} = req.params;
+    const updateDto = { backgroundImage: req.file?.filename };
+    await this.filmService.updateById(filmId, updateDto);
+    this.created(res, fillDTO(UploadBackgroundImageResponse, updateDto));
+  }
+
 }

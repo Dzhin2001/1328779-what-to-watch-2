@@ -17,6 +17,7 @@ import UpdateFavoriteDto from './dto/update-favorite.dto.js';
 import {RequestQuery} from '../../types/request-query.type.js';
 import {fillDTO} from '../../utils/common.js';
 import FilmListResponse from '../film/response/film-list.response.js';
+import {ConfigInterface} from '../../common/config/config.interface.js';
 
 type ParamsGetFilmWithStatus = {
   filmId: string;
@@ -26,10 +27,11 @@ type ParamsGetFilmWithStatus = {
 export default class FavoriteController extends Controller {
   constructor(
     @inject(Component.LoggerInterface) logger: LoggerInterface,
+    @inject(Component.ConfigInterface) configService: ConfigInterface,
     @inject(Component.FavoriteServiceInterface) private readonly favoriteService: FavoriteServiceInterface,
     @inject(Component.FilmServiceInterface) private  readonly filmService: FilmServiceInterface,
   ) {
-    super(logger);
+    super(logger, configService);
 
     this.logger.info('Register routes for FavoriteController...');
     this.addRoute({
