@@ -32,10 +32,10 @@ function AddFilmPage() {
   const activeFilm = useAppSelector(getActiveFilm);
 
   const handleSubmit = useCallback(
-    async (offerData: NewFilm) => {
-      const response = await dispatch(addFilm(offerData));
+    async (filmData: NewFilm) => {
+      const response = await dispatch(addFilm(filmData));
       if (response.meta.requestStatus === 'rejected') {
-        toast.error('Can\'t add offer');
+        toast.error('Can\'t add film');
       } else if (activeFilm) {
         navigate(`${AppRoute.Film}/${activeFilm.id}`);
       }

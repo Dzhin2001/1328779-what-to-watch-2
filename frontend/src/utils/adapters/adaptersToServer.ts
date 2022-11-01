@@ -6,6 +6,7 @@ import {getTime} from '../utils';
 import {GenreTypeEnum} from '../../const';
 import {NewFilm} from '../../types/new-film';
 import CreateFilmDto from '../../dto/film/create-film.dto';
+import UpdateFilmDto from '../../dto/film/update-film.dto';
 
 export const adaptGenreToServer =
   (genre: string): GenreTypeEnum | undefined => (
@@ -38,6 +39,21 @@ export const adaptCreateFilmToServer =
     backgroundColor: film.backgroundColor,
   });
 
+export const adaptUpdateFilmToServer =
+  (film: NewFilm): UpdateFilmDto => ({
+    name: film.name,
+    description: film.description,
+    date: getTime(),
+    genre: adaptGenreToServer(film.genre),
+    released: film.released,
+    previewVideoLink: film.previewVideoLink,
+    videoLink: film.videoLink,
+    director: film.director,
+    actors: film.starring,
+    runTime: film.runTime,
+    backgroundColor: film.backgroundColor,
+  });
+
 export const adaptCreateCommentToServer =
   (filmId: string, review: NewReview): CreateCommentDto => ({
     comment: review.comment,
@@ -55,14 +71,15 @@ export const adaptAvatarToServer =
   };
 
 export const adaptImageToServer =
-  async (fieldName: string, fileUrl: string) => {
+  (fieldName: string, fileUrl: string) => {
 
-    // const data = await fetch(fileUrl);
-    // const blobUrl = await data.blob();
+    const file = new Blob([`< ${fileUrl}`], { type: 'image/jpeg'});
 
-    const blobUrl = new Blob([`< ${fileUrl}`], { type: 'image/jpeg'});
+    // const file = await fetch(fileUrl)
+    //   .then((r) => r.blob())
+    //   .then( (blobFile) => (new File([blobFile], `${fieldName}.jpg`, { type: 'image/jpeg'})));
 
     const formData = new FormData();
-    formData.set(fieldName, blobUrl, `${fieldName}.jpg`);
+    formData.set(fieldName, file, `${fieldName}.jpg`);
     return formData;
   };

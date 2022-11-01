@@ -6,7 +6,7 @@ export default class UpdateFilmDto {
 
     public description?: string;
 
-    public date?: Date;
+    public date?: string;
 
     public genre?: GenreTypeEnum;
 

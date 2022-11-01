@@ -59,7 +59,7 @@ import {
   adaptCreateFilmToServer,
   adaptGenreToServer,
   adaptImageToServer,
-  adaptSignupToServer
+  adaptSignupToServer, adaptUpdateFilmToServer
 } from '../utils/adapters/adaptersToServer';
 
 type AsyncThunkConfig = {
@@ -332,7 +332,7 @@ export const editFilm = createAsyncThunk<void, Film, AsyncThunkConfig>(
     try {
       const { data } = await api.patch<FilmDto>(
         `${APIRoute.Films}/${filmData.id}`,
-        adaptCreateFilmToServer(filmData)
+        adaptUpdateFilmToServer(filmData)
       );
       const film = adaptFilmToClient(data);
       if (posterImage) {

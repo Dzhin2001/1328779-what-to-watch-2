@@ -31,10 +31,10 @@ function EditFilmPage() {
     dispatch(fetchFilm(id));
   }, [dispatch, id]);
 
-  const handleSubmit = useCallback(async (offerData: Film) => {
-    const response = await dispatch(editFilm(offerData));
+  const handleSubmit = useCallback(async (filmData: Film) => {
+    const response = await dispatch(editFilm(filmData));
     if (response.meta.requestStatus === 'rejected') {
-      toast.error('Can\'t edit offer');
+      toast.error('Can\'t edit film');
     } else {
       navigate(`${AppRoute.Film}/${id}`);
     }
