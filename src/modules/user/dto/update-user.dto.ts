@@ -8,6 +8,6 @@ export default class UpdateUserDto {
   public name?: string;
 
   @IsOptional()
-  @Matches(/\S+(?:jpg|png)$/)
+  @Matches('.*.(jpg|jpeg|png)$')
   public avatarImage?: string;
 }

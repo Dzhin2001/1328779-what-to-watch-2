@@ -16,8 +16,8 @@ import {DocumentExistsMiddleware} from '../../common/middlewares/document-exists
 import UpdateFavoriteDto from './dto/update-favorite.dto.js';
 import {RequestQuery} from '../../types/request-query.type.js';
 import {fillDTO} from '../../utils/common.js';
-import FilmListResponse from '../film/response/film-list.response.js';
 import {ConfigInterface} from '../../common/config/config.interface.js';
+import FilmResponse from '../film/response/film.response.js';
 
 type ParamsGetFilmWithStatus = {
   filmId: string;
@@ -67,7 +67,8 @@ export default class FavoriteController extends Controller {
       return;
     }
     await this.favoriteService.findAndUpdate(favoriteDto);
-    this.created(res, favoriteDto);
+    const film = await this.filmService.findById(params.filmId);
+    this.created(res, fillDTO(FilmResponse, film));
   }
 
   public async favoriteByUser(
@@ -75,7 +76,7 @@ export default class FavoriteController extends Controller {
     res: Response
   ): Promise<void> {
     const favorites = await this.favoriteService.findByUser(user.id, query.limit);
-    this.ok(res, fillDTO(FilmListResponse, favorites));
+    this.ok(res, fillDTO(FilmResponse, favorites));
   }
 
 }

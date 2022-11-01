@@ -7,7 +7,7 @@ import {HttpMethod} from '../../types/http-method.enum.js';
 import {UserServiceInterface} from './user-service.interface.js';
 import HttpError from '../../common/errors/http-error.js';
 import {StatusCodes} from 'http-status-codes';
-import {createJWT, fillDTO} from '../../utils/common.js';
+import {createJWT, fillDTO } from '../../utils/common.js';
 import {ConfigInterface} from '../../common/config/config.interface.js';
 import UserResponse from './response/user.response.js';
 import CreateUserDto from './dto/create-user.dto.js';
@@ -16,8 +16,14 @@ import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.mid
 import {UploadFileMiddleware} from '../../common/middlewares/upload-file.middleware.js';
 import LoggedUserResponse from './response/logged-user.response.js';
 import {JWT_ALGORITM} from './user.constant.js';
-import {PrivateRouteMiddleware} from '../../common/middlewares/private-route.middleware.js';
 import UploadUserAvatarResponse from './response/upload-user-avatar.response.js';
+import * as core from 'express-serve-static-core';
+import {ValidateUploadDtoMiddleware} from '../../common/middlewares/validate-upload-dto.middleware.js';
+import {PrivateRouteMiddleware} from '../../common/middlewares/private-route.middleware.js';
+
+type ParamsGetUser = {
+  userId: string;
+}
 
 @injectable()
 export default class UserController extends Controller {
@@ -39,7 +45,8 @@ export default class UserController extends Controller {
     this.addRoute({
       path: '/login',
       method: HttpMethod.Get,
-      handler: this.checkAuthenticate
+      handler: this.checkAuthenticate,
+      middlewares: [new PrivateRouteMiddleware()]
     });
     this.addRoute({
       path: '/login',
@@ -47,12 +54,18 @@ export default class UserController extends Controller {
       handler: this.login
     });
     this.addRoute({
-      path: '/avatar',
+      path: '/logout',
+      method: HttpMethod.Delete,
+      handler: this.logout,
+      middlewares: [new PrivateRouteMiddleware()]
+    });
+    this.addRoute({
+      path: '/:userId/avatar',
       method: HttpMethod.Post,
-      handler: this.uploadAvatar,
+      handler: this.uploadImage,
       middlewares: [
-        new PrivateRouteMiddleware(),
         new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'avatarImage'),
+        new ValidateUploadDtoMiddleware(UploadUserAvatarResponse),
       ]
     });
   }
@@ -84,15 +97,12 @@ export default class UserController extends Controller {
   }
 
   public async checkAuthenticate(req: Request, res: Response) {
-    if (! req.user) {
-      throw new HttpError(
-        StatusCodes.UNAUTHORIZED,
-        'Unauthorized',
-        'UserController'
-      );
-    }
     const user = await this.userService.findByEmail(req.user.email);
     this.ok(res, fillDTO(LoggedUserResponse, user));
+  }
+
+  public async logout(_req: Request, res: Response) {
+    this.ok(res, 'Successfully logout');
   }
 
   public async create(
@@ -116,10 +126,9 @@ export default class UserController extends Controller {
     );
   }
 
-  public async uploadAvatar(req: Request, res: Response) {
-    const userId = req.user.id;
-    const updateDto = {avatarImage: req.file?.filename};
-    await this.userService.updateById(userId, updateDto);
-    this.created(res, fillDTO(UploadUserAvatarResponse, updateDto));
+  public async uploadImage(req: Request<core.ParamsDictionary | ParamsGetUser>, res: Response) {
+    const userId = req.params.userId;
+    await this.userService.updateById(userId, req.upload.dtoPlain);
+    this.created(res, req.upload.dtoInstance);
   }
 }

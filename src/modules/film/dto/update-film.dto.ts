@@ -56,12 +56,12 @@ export default class UpdateFilmDto {
 
   @IsOptional()
   @IsString({message: 'PosterImage is required'})
-  @Matches(/\S+.jpg$/)
+  @Matches('.*.(jpg|jpeg)$')
   public posterImage?: string;
 
   @IsOptional()
   @IsString({message: 'BackgroundImage is required'})
-  @Matches(/\S+.jpg$/)
+  @Matches('.*.(jpg|jpeg)$')
   public backgroundImage?: string;
 
   @IsOptional()

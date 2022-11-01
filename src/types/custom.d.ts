@@ -3,6 +3,10 @@ declare namespace Express {
     user: {
       id: string,
       email: string,
+    },
+    upload: {
+      dtoPlain: object,
+      dtoInstance: object,
     }
   }
 }

@@ -18,13 +18,13 @@ import {PrivateRouteMiddleware} from '../../common/middlewares/private-route.mid
 import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
 import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
 import {DocumentExistsMiddleware} from '../../common/middlewares/document-exists.middleware.js';
-import FilmListResponse from './response/film-list.response.js';
 import {GenreTypeEnum} from '../../types/genre-type.enum.js';
 import HttpError from '../../common/errors/http-error.js';
 import {ConfigInterface} from '../../common/config/config.interface.js';
 import {UploadFileMiddleware} from '../../common/middlewares/upload-file.middleware.js';
 import UploadPosterImageResponse from './response/upload-poster-image.response.js';
 import UploadBackgroundImageResponse from './response/upload-background-image.response.js';
+import {ValidateUploadDtoMiddleware} from '../../common/middlewares/validate-upload-dto.middleware.js';
 
 type ParamsGetFilm = {
   filmId: string;
@@ -50,6 +50,11 @@ export default class FilmController extends Controller {
       path: '/',
       method: HttpMethod.Get,
       handler: this.index
+    });
+    this.addRoute({
+      path: '/promo',
+      method: HttpMethod.Get,
+      handler: this.getPromoFilm
     });
     this.addRoute({
       path: '/genre/:genre',
@@ -96,6 +101,15 @@ export default class FilmController extends Controller {
       ]
     });
     this.addRoute({
+      path: '/:filmId/similar',
+      method: HttpMethod.Get,
+      handler: this.getSimilarFilms,
+      middlewares: [
+        new ValidateObjectIdMiddleware('filmId'),
+        new DocumentExistsMiddleware(this.filmService, 'Film', 'filmId'),
+      ]
+    });
+    this.addRoute({
       path: '/:filmId/comments',
       method: HttpMethod.Get,
       handler: this.getComments,
@@ -116,21 +130,23 @@ export default class FilmController extends Controller {
     this.addRoute({
       path: '/:filmId/posterImage',
       method: HttpMethod.Post,
-      handler: this.uploadPosterImage,
+      handler: this.uploadImage,
       middlewares: [
         new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('filmId'),
         new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'posterImage'),
+        new ValidateUploadDtoMiddleware(UploadPosterImageResponse),
       ]
     });
     this.addRoute({
       path: '/:filmId/backgroundImage',
       method: HttpMethod.Post,
-      handler: this.uploadBackgroundImage,
+      handler: this.uploadImage,
       middlewares: [
         new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('filmId'),
         new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'backgroundImage'),
+        new ValidateUploadDtoMiddleware(UploadBackgroundImageResponse),
       ]
     });
   }
@@ -141,7 +157,12 @@ export default class FilmController extends Controller {
   ): Promise<void> {
     const userId = user ? user.id : undefined;
     const films = await this.filmService.find(userId, undefined, query.limit);
-    this.ok(res, fillDTO(FilmListResponse, films));
+    this.ok(res, fillDTO(FilmResponse, films));
+  }
+
+  public async getPromoFilm( _req: Request, res: Response): Promise<void> {
+    const film = await this.filmService.findPromo();
+    this.ok(res, fillDTO(FilmResponse, film));
   }
 
   public async getFilmsByGenre(
@@ -158,7 +179,19 @@ export default class FilmController extends Controller {
       );
     }
     const films = await this.filmService.find(userId, genre, query.limit);
-    this.send(res, StatusCodes.OK, fillDTO(FilmListResponse, films));
+    this.send(res, StatusCodes.OK, fillDTO(FilmResponse, films));
+  }
+
+  public async getSimilarFilms(
+    {user, params, query}: Request<core.ParamsDictionary | ParamsGetFilm, unknown, unknown, RequestQuery>,
+    res: Response
+  ): Promise<void> {
+    const userId = user ? user.id : undefined;
+    const {filmId} = params;
+    const film = await this.filmService.findById(filmId);
+    const genre = film ? film.genre : '';
+    const films = await this.filmService.find(userId, genre, query.limit);
+    this.send(res, StatusCodes.OK, fillDTO(FilmResponse, films));
   }
 
   public async create(
@@ -212,18 +245,10 @@ export default class FilmController extends Controller {
     this.ok(res, (comments));
   }
 
-  public async uploadPosterImage(req: Request<core.ParamsDictionary | ParamsGetFilm>, res: Response) {
+  public async uploadImage(req: Request<core.ParamsDictionary | ParamsGetFilm>, res: Response) {
     const {filmId} = req.params;
-    const updateDto = { posterImage: req.file?.filename };
-    await this.filmService.updateById(filmId, updateDto);
-    this.created(res, fillDTO(UploadPosterImageResponse, updateDto));
-  }
-
-  public async uploadBackgroundImage(req: Request<core.ParamsDictionary | ParamsGetFilm>, res: Response) {
-    const {filmId} = req.params;
-    const updateDto = { backgroundImage: req.file?.filename };
-    await this.filmService.updateById(filmId, updateDto);
-    this.created(res, fillDTO(UploadBackgroundImageResponse, updateDto));
+    await this.filmService.updateById(filmId, req.upload.dtoPlain);
+    this.created(res, req.upload.dtoInstance);
   }
 
 }

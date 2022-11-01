@@ -3,12 +3,21 @@ GET http://localhost:3333/api HTTP/1.1
 ###
 
 # Фильм
+
 ## Получить список фильмов
 
-GET http://localhost:3333/films?limit=3 HTTP/1.1
+GET http://localhost:3333/films?limit=40 HTTP/1.1
 Content-Type: application/json
 
 ###
+
+## Получить промо фильм
+
+GET http://localhost:3333/films/promo HTTP/1.1
+Content-Type: application/json
+
+###
+
 ## Список фильмов для авторизованного пользователя
 
 GET http://localhost:3333/films HTTP/1.1
@@ -59,8 +68,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2tAaGFja2VyLm5ldCIsI
 
   "released": 2011,
 
-  "rating": 4.0,
-
   "previewVideoLink": "squre.mp4",
 
   "videoLink": "squre.mp4",
@@ -70,8 +77,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2tAaGFja2VyLm5ldCIsI
   "director": "Прохоров",
 
   "runTime": 13,
-
-  "commentCount": 1,
 
   "backgroundColor": "#070707"
 
@@ -99,29 +104,29 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2tAaGFja2VyLm5ldCIsI
 ###
 
 ## Загрузка постера для фильма
-POST http://localhost:3333/films/633b4fafc6bfae16936bbe84/posterImage HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2tAaGFja2VyLm5ldCIsImlkIjoiNjM0YzUxZTlkNGNkMTJmOTNjZDlmZTNkIiwiaWF0IjoxNjY3MDgwNDMwLCJleHAiOjE2NjcyNTMyMzB9.64gxuK0UOgbZz6mRk7kXZSY2d10a9fR3R5vybwyLbhw
+POST http://localhost:3333/films/635fa4d634dd7a3ee8974840/posterImage HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RlckBoYWNrZXIubmV0IiwiaWQiOiI2MzYwM2RhMjIzMmZlNzk2MzIxOGJlNmIiLCJpYXQiOjE2NjcyNTE2MzgsImV4cCI6MTY2NzQyNDQzOH0.ayF5z0qmQRhjPF5g8BJ-smJwEXR05geg3DURLzKS-sg
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="posterImage"; filename="Avatar.png"
-Content-Type: image/png
+Content-Disposition: form-data; name="posterImage"; filename="Image.jpg"
+Content-Type: image/jpeg
 
-< /Users/SuperDzhin/Downloads/Avatar.png
+< data:image/jpeg;base64,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
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 ###
 
 ## Загрузка фонового изображения фильма
-POST http://localhost:3333/films/633b4fafc6bfae16936bbe84/backgroundImage HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2tAaGFja2VyLm5ldCIsImlkIjoiNjM0YzUxZTlkNGNkMTJmOTNjZDlmZTNkIiwiaWF0IjoxNjY3MDgwNDMwLCJleHAiOjE2NjcyNTMyMzB9.64gxuK0UOgbZz6mRk7kXZSY2d10a9fR3R5vybwyLbhw
+POST http://localhost:3333/films/635fa4d634dd7a3ee8974840/backgroundImage HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RlckBoYWNrZXIubmV0IiwiaWQiOiI2MzYwM2RhMjIzMmZlNzk2MzIxOGJlNmIiLCJpYXQiOjE2NjcyNTE2MzgsImV4cCI6MTY2NzQyNDQzOH0.ayF5z0qmQRhjPF5g8BJ-smJwEXR05geg3DURLzKS-sg
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="backgroundImage"; filename="Avatar.png"
-Content-Type: image/png
+Content-Disposition: form-data; name="backgroundImage"; filename="Image.jpg"
+Content-Type: image/jpeg
 
-< /Users/SuperDzhin/Downloads/Avatar.png
+< /Users/SuperDzhin/Downloads/Image.jpg
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 ###
@@ -137,7 +142,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2tAaGFja2VyLm5ldCIsI
   "filmId": "633b4fafc6bfae16936bbe69",
   "comment": "Тестирование добавления комментария",
   "date": "2033-11-11",
-  "rating": 9.9,
+  "rating": 7,
   "userId": "634c51e9d4cd12f93cd9fe3d"
 }
 
@@ -196,8 +201,7 @@ Content-Type: application/json
 
 ## Отправка аватарки пользователю
 
-POST http://localhost:3333/users/avatar HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImplY2tAaGFja2VyLm5ldCIsImlkIjoiNjM0YzUxZTlkNGNkMTJmOTNjZDlmZTNkIiwiaWF0IjoxNjY3MDgwNDMwLCJleHAiOjE2NjcyNTMyMzB9.64gxuK0UOgbZz6mRk7kXZSY2d10a9fR3R5vybwyLbhw
+POST http://localhost:3333/users/634c51e9d4cd12f93cd9fe3d/avatar HTTP/1.1
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW

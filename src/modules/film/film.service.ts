@@ -101,6 +101,7 @@ export default class FilmService implements FilmServiceInterface {
         {
           $addFields:
             {
+              id: { $toString: '$_id'},
               isFavorite:
               {
                 '$cond': {

@@ -59,12 +59,22 @@ export default class FavoriteService implements FavoriteServiceInterface {
         {
           $addFields:
             {
+              id: { $toString: '$film._id'},
               name: '$film.name',
+              description: '$film.description',
               date: '$film.date',
               genre: '$film.genre',
+              released: '$film.released',
+              rating: '$film.rating',
               previewVideoLink: '$film.previewVideoLink',
-              posterImage: '$film.posterImage',
+              videoLink: '$film.videoLink',
+              actors: '$film.actors',
+              director: '$film.director',
+              runTime: '$film.runTime',
               commentCount: '$film.commentCount',
+              posterImage: '$film.posterImage',
+              backgroundImage: '$film.backgroundImage',
+              backgroundColor: '$film.backgroundColor',
               isFavorite: true,
             }
         },
