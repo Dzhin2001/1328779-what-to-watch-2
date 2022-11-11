@@ -7,6 +7,7 @@ import {GenreTypeEnum} from '../../const';
 import {NewFilm} from '../../types/new-film';
 import CreateFilmDto from '../../dto/film/create-film.dto';
 import UpdateFilmDto from '../../dto/film/update-film.dto';
+import {Film} from '../../types/film';
 
 export const adaptGenreToServer =
   (genre: string): GenreTypeEnum | undefined => (
@@ -40,7 +41,7 @@ export const adaptCreateFilmToServer =
   });
 
 export const adaptUpdateFilmToServer =
-  (film: NewFilm): UpdateFilmDto => ({
+  (film: NewFilm | Film): UpdateFilmDto => ({
     name: film.name,
     description: film.description,
     date: getTime(),
@@ -71,15 +72,20 @@ export const adaptAvatarToServer =
   };
 
 export const adaptImageToServer =
-  (fieldName: string, fileUrl: string) => {
-
-    const file = new Blob([`< ${fileUrl}`], { type: 'image/jpeg'});
-
-    // const file = await fetch(fileUrl)
-    //   .then((r) => r.blob())
-    //   .then( (blobFile) => (new File([blobFile], `${fieldName}.jpg`, { type: 'image/jpeg'})));
+  (fieldName: string, file: File) => {
 
     const formData = new FormData();
-    formData.set(fieldName, file, `${fieldName}.jpg`);
+    formData.set(fieldName, file);
     return formData;
   };
+
+
+// export const adaptImageToServer =
+//   (fieldName: string, fileUrl: string) => {
+//
+//     const file = new Blob([`< ${fileUrl}`], { type: 'image/jpeg'});
+//
+//     const formData = new FormData();
+//     formData.set(fieldName, file, `${fieldName}.jpg`);
+//     return formData;
+//   };

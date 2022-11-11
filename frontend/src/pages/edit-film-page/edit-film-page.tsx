@@ -13,14 +13,16 @@ import {
 } from '../../store/film-data/selectors';
 import { fetchFilm, editFilm } from '../../store/api-actions';
 import { useAppSelector, useAppDispatch } from '../../hooks/';
-import { Film } from '../../types/film';
 import { AppRoute } from '../../const';
+import {UpdateFilm} from '../../types/update-film';
+import {adaptFilmToUpdateFilm} from '../../utils/adapters/adapterToUpdateFilm';
+import {Film} from '../../types/film';
 
 function EditFilmPage() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
-  const film = useAppSelector(getActiveFilm);
+  const film = adaptFilmToUpdateFilm(useAppSelector(getActiveFilm) as Film);
   const isFilmLoading = useAppSelector(getFilmIsLoading);
 
   useEffect(() => {
@@ -31,7 +33,7 @@ function EditFilmPage() {
     dispatch(fetchFilm(id));
   }, [dispatch, id]);
 
-  const handleSubmit = useCallback(async (filmData: Film) => {
+  const handleSubmit = useCallback(async (filmData: UpdateFilm) => {
     const response = await dispatch(editFilm(filmData));
     if (response.meta.requestStatus === 'rejected') {
       toast.error('Can\'t edit film');

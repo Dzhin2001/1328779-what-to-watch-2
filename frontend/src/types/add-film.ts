@@ -15,5 +15,5 @@ export enum FormActionType {
 
 export type FormAction = {
   type: FormActionType;
-  payload: string | string[];
+  payload: File | string | string[];
 };

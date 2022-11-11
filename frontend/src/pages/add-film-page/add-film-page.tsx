@@ -13,8 +13,8 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 
 const emptyFilm: NewFilm = {
   name: '',
-  posterImage: '',
-  backgroundImage: '',
+  posterImage: undefined,
+  backgroundImage: undefined,
   backgroundColor: '',
   videoLink: '',
   previewVideoLink: '',

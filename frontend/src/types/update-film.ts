@@ -1,4 +1,5 @@
-export type NewFilm = {
+export type UpdateFilm = {
+  id: string;
   name: string;
   posterImage: File | undefined;
   backgroundImage: File | undefined;

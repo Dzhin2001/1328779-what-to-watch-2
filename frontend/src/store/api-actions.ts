@@ -32,7 +32,6 @@ import {
 } from './promo-data/promo-data';
 import { setUser, setAuthorizationStatus } from './user-data/user-data';
 import { AppDispatch, State } from '../types/state';
-import { Film } from '../types/film';
 import { NewReview } from '../types/new-review';
 import { AuthData } from '../types/auth-data';
 import { Token } from '../types/token';
@@ -61,6 +60,7 @@ import {
   adaptImageToServer,
   adaptSignupToServer, adaptUpdateFilmToServer
 } from '../utils/adapters/adaptersToServer';
+import {UpdateFilm} from '../types/update-film';
 
 type AsyncThunkConfig = {
   dispatch: AppDispatch;
@@ -322,7 +322,7 @@ export const addFilm = createAsyncThunk<void, NewFilm, AsyncThunkConfig>(
   }
 );
 
-export const editFilm = createAsyncThunk<void, Film, AsyncThunkConfig>(
+export const editFilm = createAsyncThunk<void, UpdateFilm, AsyncThunkConfig>(
   `${NameSpace.Film}/editFilm`,
   async (filmData, { dispatch, extra: api }) => {
     const { posterImage, backgroundImage } = filmData;

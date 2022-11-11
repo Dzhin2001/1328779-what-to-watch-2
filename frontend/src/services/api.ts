@@ -3,13 +3,13 @@ import { getToken } from './token';
 import { store } from '../store';
 import { setToDefault } from '../store/user-data/user-data';
 
-const BACKEND_URL = 'http://localhost:3333';
+const BACKEND_URL = 'http://127.0.0.1:3333';
 const REQUEST_TIMEOUT = 5000;
 
 export const createAPI = () => {
   const api = axios.create({
     baseURL: BACKEND_URL,
-    timeout: REQUEST_TIMEOUT,
+    timeout: REQUEST_TIMEOUT
   });
 
   api.interceptors.request.use((config: AxiosRequestConfig) => {

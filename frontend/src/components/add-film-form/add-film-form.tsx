@@ -1,17 +1,17 @@
-import { useReducer, Reducer } from 'react';
+import {useReducer, Reducer, ChangeEvent, useState} from 'react';
 import Select from 'react-select';
 import { GENRES } from '../../const';
-import { Film } from '../../types/film';
 import { NewFilm } from '../../types/new-film';
 import { FormAction, FormActionType } from '../../types/add-film';
 import { addFilmFormReducer } from './add-film-form.reducer';
+import {UpdateFilm} from '../../types/update-film';
 
 type AddFilmFormProps<T> = {
   film: T;
   onSubmit: (filmData: T) => void;
 };
 
-function AddFilmForm<T extends Film | NewFilm>({
+function AddFilmForm<T extends UpdateFilm | NewFilm>({
   film,
   onSubmit,
 }: AddFilmFormProps<T>) {
@@ -28,11 +28,33 @@ function AddFilmForm<T extends Film | NewFilm>({
     director,
     runTime,
     backgroundColor,
-    backgroundImage,
-    posterImage,
     videoLink,
     previewVideoLink
   } = filmData;
+  const [posterImage, setPoster] = useState<File | undefined>();
+  const [backgroundImage, setBackgroundImage] = useState<File | undefined>();
+
+  const handlePosterUpload = (evt: ChangeEvent<HTMLInputElement>) => {
+    if (!evt.target.files) {
+      return;
+    }
+    setPoster(evt.target.files[0]);
+    dispatchFilmData({
+      type: FormActionType.setPosterImage,
+      payload: evt.target.files[0],
+    });
+  };
+
+  const handleBackgroundUpload = (evt: ChangeEvent<HTMLInputElement>) => {
+    if (!evt.target.files) {
+      return;
+    }
+    setBackgroundImage(evt.target.files[0]);
+    dispatchFilmData({
+      type: FormActionType.setBackgroundImage,
+      payload: evt.target.files[0],
+    });
+  };
 
   return (
     <form
@@ -88,26 +110,26 @@ function AddFilmForm<T extends Film | NewFilm>({
           />
         </div>
       </div>
-      <div className="sign-in__fields">
-        <div className="sign-in__field">
-          <label className="sign-in__label" htmlFor="posterImage">
-            Poster image
-          </label>
-          <input
-            className="sign-in__input"
-            type="url"
-            placeholder="Poster image"
-            name="posterImage"
-            id="posterImage"
-            required
-            defaultValue={posterImage}
-            onChange={(evt) =>
-              dispatchFilmData({
-                type: FormActionType.setPosterImage,
-                payload: evt.target.value,
-              })}
-          />
-        </div>
+      <div className="`sign-in__field">
+        <input
+          className="visually-hidden"
+          type="file"
+          name="posterImage"
+          id="posterImage"
+          accept="image/png, image/jpeg"
+          onChange={handlePosterUpload}
+        />
+        <label htmlFor="posterImage" className="register-form__avatar-label">
+          {posterImage ? (
+            <img
+              src={URL.createObjectURL(posterImage)}
+              alt="Poster preview"
+              className="register-form__poster-preview"
+            />
+          ) : (
+            'Upload poster'
+          )}
+        </label>
       </div>
       <div className="sign-in__fields">
         <div className="sign-in__field">
@@ -239,26 +261,27 @@ function AddFilmForm<T extends Film | NewFilm>({
           />
         </div>
       </div>
-      <div className="sign-in__fields">
-        <div className="sign-in__field">
-          <label className="sign-in__label" htmlFor="backgroundImage">
-            Background image
-          </label>
-          <input
-            className="sign-in__input"
-            type="url"
-            placeholder="Background image"
-            name="backgroundImage"
-            id="backgroundImage"
-            required
-            defaultValue={backgroundImage}
-            onChange={(evt) =>
-              dispatchFilmData({
-                type: FormActionType.setBackgroundImage,
-                payload: evt.target.value,
-              })}
-          />
-        </div>
+
+      <div className="`sign-in__field">
+        <input
+          className="visually-hidden"
+          type="file"
+          name="background"
+          id="background"
+          accept="image/png, image/jpeg"
+          onChange={handleBackgroundUpload}
+        />
+        <label htmlFor="background" className="register-form__avatar-label">
+          {backgroundImage ? (
+            <img
+              src={URL.createObjectURL(backgroundImage)}
+              alt="Avatar preview"
+              className="register-form__avatar-preview"
+            />
+          ) : (
+            'Upload background'
+          )}
+        </label>
       </div>
       <div className="sign-in__fields">
         <div className="sign-in__field">
